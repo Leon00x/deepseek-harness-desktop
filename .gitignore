@@ -1,0 +1,13 @@
+# Compiled artifacts & dependencies
+node_modules/
+src-tauri/target/
+src-tauri/gen/
+
+# Local release bundles (uploaded to GitHub Releases, not committed)
+release/
+
+# OS / editor
+.DS_Store
+*.log
+.idea/
+.vscode/

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeepSeek Harness — 设置</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="brand">
+        <span class="brand-badge" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="14" height="11" rx="2"/>
+            <path d="M17 9h2.5a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 7 17.5V16"/>
+            <path d="M10 14l4-4M10 6.5h0"/>
+          </svg>
+        </span>
+        <div>
+          <h1>DeepSeek Harness</h1>
+          <p class="sub">Linux 原生桌面客户端 —— 连接本机或远程的 DeepSeek Harness Web 服务。</p>
+        </div>
+      </div>
+      <p id="firstRun" class="first-run" hidden>当前使用默认连接（http://127.0.0.1:3080），可在下方修改后保存。</p>
+    </header>
+
+    <form id="settingsForm" novalidate>
+      <!-- 基本 -->
+      <section class="card">
+        <h2>基本</h2>
+        <div class="field">
+          <label for="url">网页地址 <span class="req">*</span></label>
+          <input id="url" type="url" inputmode="url" autocomplete="url" spellcheck="false"
+                 placeholder="例如 https://example.com" required>
+          <p class="hint">留空协议时将自动补全为 https://，例如输入 <code>example.com</code>。</p>
+        </div>
+        <div class="field">
+          <label for="title">窗口标题</label>
+          <input id="title" type="text" maxlength="80" spellcheck="false"
+                 placeholder="留空则使用网址域名">
+          <p class="hint">窗口标题（托盘提示也用它）。</p>
+        </div>
+        <div class="field">
+          <label for="appName">应用名称</label>
+          <input id="appName" type="text" maxlength="80" spellcheck="false"
+                 placeholder="留空则显示 DeepSeek Harness">
+          <p class="hint">程序列表（Show Applications）与 Dock 中显示的名字，保存后生效。</p>
+        </div>
+      </section>
+
+      <!-- 图标 -->
+      <section class="card">
+        <h2>图标</h2>
+        <div class="icon-picker">
+          <div class="preview-col">
+            <div id="previewDefault" class="preview preview-default" aria-label="默认图标">
+              <svg width="46" height="46" viewBox="0 0 512 512">
+                <defs>
+                  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#38bdf8"/>
+                  </linearGradient>
+                </defs>
+                <rect x="8" y="8" width="496" height="496" rx="115" fill="url(#g)"/>
+                <rect x="120" y="128" width="272" height="244" rx="26" fill="none" stroke="#fff"
+                      stroke-width="26"/>
+                <circle cx="146" cy="158" r="9" fill="#8ea2e8"/><circle cx="180" cy="158" r="9" fill="#fcd34d"/>
+                <circle cx="214" cy="158" r="9" fill="#6ee7b7"/>
+                <path d="M246 226 L330 134 M298 134 h32 v32 M298 134 l0 0" fill="none" stroke="#fff"
+                      stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <img id="previewImg" class="preview" alt="图标预览" hidden>
+            <p id="iconNote" class="icon-note">内置默认图标</p>
+          </div>
+
+          <div class="modes" role="radiogroup" aria-label="图标来源">
+            <label class="mode">
+              <input type="radio" name="iconMode" value="default">
+              <span class="mode-body"><strong>默认图标</strong><small>使用启动器自带图标</small></span>
+            </label>
+            <label class="mode">
+              <input type="radio" name="iconMode" value="auto">
+              <span class="mode-body"><strong>自动获取网站图标</strong><small>保存时从网页自动探测 favicon</small></span>
+            </label>
+            <label class="mode" id="uploadModeLabel">
+              <input type="radio" name="iconMode" value="upload">
+              <span class="mode-body"><strong>使用本地图片</strong><small>点击选择或直接拖入图片</small></span>
+            </label>
+            <input id="fileInput" type="file" accept="image/png,image/jpeg,image/x-icon,.ico,.png,.jpg,.jpeg,.ico" aria-hidden="true" tabindex="-1">
+            <div id="dropZone" class="drop-zone" hidden>
+              <span>点击选择图片，或把 PNG / JPG / ICO 拖到这里</span>
+              <em id="dropName"></em>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 窗口 -->
+      <section class="card">
+        <h2>窗口</h2>
+        <div class="row">
+          <div class="field small">
+            <label for="width">宽度</label>
+            <input id="width" type="number" min="640" max="7680" step="20" value="1280">
+          </div>
+          <div class="field small">
+            <label for="height">高度</label>
+            <input id="height" type="number" min="480" max="4320" step="20" value="860">
+          </div>
+        </div>
+        <label class="toggle">
+          <input id="immersive" type="checkbox" checked>
+          <span class="toggle-ui" aria-hidden="true"></span>
+          <span class="toggle-text">
+            <strong>沉浸模式</strong>
+            <small>无边框透明圆角窗口，鼠标靠近顶部时出现悬浮控制栏</small>
+          </span>
+        </label>
+        <label class="toggle" style="margin-top:16px">
+          <input id="showTray" type="checkbox" checked>
+          <span class="toggle-ui" aria-hidden="true"></span>
+          <span class="toggle-text">
+            <strong>系统托盘图标</strong>
+            <small>在顶部状态栏显示托盘图标，可右键打开设置/重新加载/退出</small>
+          </span>
+        </label>
+      </section>
+
+      <p id="msg" class="msg" role="status" hidden></p>
+
+      <footer class="actions">
+        <button type="button" id="saveBtn" class="btn ghost">仅保存</button>
+        <button type="button" id="launchBtn" class="btn primary">保存并启动</button>
+      </footer>
+    </form>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

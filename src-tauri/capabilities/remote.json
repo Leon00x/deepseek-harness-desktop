@@ -1,0 +1,16 @@
+{
+  "identifier": "remote-window-controls",
+  "description": "允许用户配置的远程页面使用窗口控制（最小化/最大化/关闭/拖动）与打开设置事件；作用域覆盖所有 http/https 页面（任意主机与端口）",
+  "windows": ["main"],
+  "remote": {
+    "urls": ["https://*:*", "http://*:*"]
+  },
+  "permissions": [
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-internal-toggle-maximize",
+    "core:window:allow-start-dragging",
+    "core:event:allow-emit"
+  ]
+}
