@@ -130,14 +130,6 @@ pub fn open_settings_window(handle: &AppHandle) -> Result<(), String> {
         .map_err(|e| format!("创建设置窗口失败: {e}"))
 }
 
-/// 关闭设置窗口（若存在）
-pub fn close_settings_window(handle: &AppHandle) {
-    if let Some(w) = handle.get_webview_window(CONFIG_LABEL) {
-        let _ = w.close();
-    }
-}
-
-/// 创建（或重建）主窗口，加载用户配置的网址
 pub fn create_main_window(
     handle: &AppHandle,
     cfg: &LauncherConfig,
@@ -181,22 +173,33 @@ pub fn create_main_window(
         });
     }
 
-    let mut translucent = false;
+    let want_transparent = cfg.immersive || cfg.opacity < 100 || cfg.bg_transparent;
     if cfg.immersive {
         builder = builder
             .decorations(false)
-            .transparent(true)
             .initialization_script(POLYFILL)
             .initialization_script(IMMERSIVE_SCRIPT);
-        translucent = cfg.opacity < 100;
-    } else if cfg.opacity < 100 {
-        // 标准窗口 + 半透明：需要透明窗口画布
+    }
+    if want_transparent {
         builder = builder.transparent(true);
-        translucent = true;
     }
 
-    // 半透明：页面整体透明度 = opacity/100（让“透明板”效果可调）
-    if translucent {
+    // 仅背景透明：去掉页面所有元素“底色/背景图”（文字与 <img> 等真实内容保留），
+    // 整窗露出桌面，呈现“透明板”观感。
+    if cfg.bg_transparent {
+        builder = builder.initialization_script(
+            "(function(){function f(){var h=document.head;if(!h)return false;\
+             if(document.getElementById('__dsh_bgclear__'))return true;\
+             var s=document.createElement('style');s.id='__dsh_bgclear__';\
+             s.textContent='html,body,*{background-color:transparent!important;background-image:none!important;}\
+             html{background:transparent!important;}';\
+             h.appendChild(s);return true;}\
+             if(!f())document.addEventListener('DOMContentLoaded',f,{once:true});})();",
+        );
+    }
+
+    // 整体半透明：页面整体透明度 = opacity/100（文字也会变淡，作为独立选项保留）
+    if cfg.opacity < 100 {
         let op = (cfg.opacity.clamp(10, 100) as f64) / 100.0;
         let script = format!(
             "(function(){{function f(){{var h=document.head;if(!h)return false;if(document.getElementById('__dsh_opacity__'))return true;var s=document.createElement('style');s.id='__dsh_opacity__';s.textContent='html{{background-color:transparent!important;}}body{{opacity:{op}!important;}}';h.appendChild(s);return true;}}if(!f())document.addEventListener('DOMContentLoaded',f,{{once:true}});}})();",

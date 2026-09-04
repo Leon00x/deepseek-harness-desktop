@@ -21,6 +21,7 @@
   const widthInput = $('width');
   const heightInput = $('height');
   const immersiveInput = $('immersive');
+  const bgTransparentInput = $('bgTransparent');
   const showTrayInput = $('showTray');
   const opacityInput = $('opacity');
   const opacityVal = $('opacityVal');
@@ -200,6 +201,7 @@
       width: w,
       height: h,
       immersive: immersiveInput.checked,
+      bgTransparent: bgTransparentInput.checked,
       showTray: showTrayInput.checked,
       opacity: parseInt(opacityInput.value, 10) || 100,
     };
@@ -230,7 +232,7 @@
       }
       const warn = (res.warnings || []).map((w) => '· ' + w).join('\n');
       msg(launch ? 'ok' : 'ok',
-        launch ? '已保存并启动 ✔' + (warn ? '\n' + warn : '')
+        launch ? '已保存，正在重新启动…' + (warn ? '\n' + warn : '')
                : '已保存 ✔' + (warn ? '\n' + warn : ''));
       if (!launch) {
         firstRun.hidden = true;
@@ -240,7 +242,7 @@
       msg('error', String(err && err.message ? err.message : err));
     } finally {
       setBusy(false);
-      launchBtn.textContent = '保存并启动';
+      launchBtn.textContent = '保存并重新启动';
     }
   }
 
@@ -255,6 +257,7 @@
         widthInput.value = c.width || 1280;
         heightInput.value = c.height || 860;
         immersiveInput.checked = !!c.immersive;
+        bgTransparentInput.checked = !!c.bgTransparent;
         showTrayInput.checked = c.showTray !== false;
         opacityInput.value = c.opacity || 100;
         opacityVal.textContent = (c.opacity || 100) + '%';
@@ -280,6 +283,11 @@
   // ---- 事件 ----
   opacityInput.addEventListener('input', () => {
     opacityVal.textContent = opacityInput.value + '%';
+    clearTimeout(opacityInput._t);
+    opacityInput._t = setTimeout(() => {
+      const v = parseInt(opacityInput.value, 10) || 100;
+      invoke('live_set_opacity', { opacity: v }).catch(() => {});
+    }, 80);
   });
   urlInput.addEventListener('input', () => {
     state.lastProbedUrl = '';

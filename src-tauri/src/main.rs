@@ -53,6 +53,7 @@ fn main() {
             commands::get_setup_state,
             commands::probe_favicon,
             commands::save_config,
+            commands::live_set_opacity,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -93,4 +94,28 @@ fn boot(handle: &AppHandle, cfg: Option<&LauncherConfig>) -> Result<(), String> 
     desktop::sync(cfg);
 
     Ok(())
+}
+
+/// 保存后整体重启应用：新进程按新配置重新创建主窗口（避免就地重建窗口的坑）
+pub fn relaunch(handle: &AppHandle) -> Result<(), String> {
+    let exe = std::env::current_exe().map_err(|e| format!("无法定位可执行文件: {e}"))?;
+    // 单实例插件会拦掉“还在运行”的第二次启动；因此让新进程延迟 1 秒、
+    // 等当前进程完全退出（释放单实例锁）后再真正启动。
+    let sh = format!("sleep 1 && exec {}", shell_quote(&exe));
+    std::process::Command::new("sh")
+        .arg("-c")
+        .arg(&sh)
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .map_err(|e| format!("启动新进程失败: {e}"))?;
+    std::thread::sleep(std::time::Duration::from_millis(250));
+    handle.exit(0);
+    Ok(())
+}
+
+/// 为 /bin/sh 的 Exec 加引号（路径含空格也安全）
+fn shell_quote(path: &std::path::Path) -> String {
+    format!("\"{}\"", path.to_string_lossy())
 }

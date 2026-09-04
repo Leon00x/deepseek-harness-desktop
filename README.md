@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="src-tauri/icons/icon.png" width="112" alt="DeepSeek Harness Desktop icon">
-  <h1>DeepSeek Harness Desktop</h1>
+  <img src="logo.png" width="112" alt="DeepSeek Harness Desktop - Linux">
+  <h1>DeepSeek Harness Desktop - Linux</h1>
   <p>DeepSeek Harness · Linux 原生桌面客户端</p>
 
   <p>
@@ -17,25 +17,22 @@
 
 ## 界面预览
 
-<!-- TODO: 补充截图后取消注释并替换文件
 <p align="center">
-  <img src="docs/images/main.png" alt="主界面" width="100%">
+  <img src="docs/images/main.png" alt="DeepSeek Harness Desktop 主界面" width="100%">
 </p>
 
-| 桌面端主界面 | 沉浸模式与托盘 | 设置页 |
-|---|---|---|
-| <img src="docs/images/main.png" width="100%"> | <img src="docs/images/immersive.png" width="100%"> | <img src="docs/images/settings.png" width="100%"> |
--->
-
-截图请放入 [`docs/images/`](docs/images/) 后更新上方区块(推荐 `main.png` / `immersive.png` / `settings.png`)。
+| 桌面端主界面 | 透明背景模式 |
+|---|---|
+| <img src="docs/images/main.png" width="100%"> | <img src="docs/images/main-transparent.png" width="100%"> |
 
 ## 特性
 
 - **开箱即用**:下载即运行,默认连接本机 `http://127.0.0.1:3080` 的 DeepSeek Harness;首次启动自动写入默认配置并直接进入桌面端
+- **独立 WebKit 数据目录**,Harness 登录/会话状态持久保存,不会受普通浏览器干扰
 - 连接地址/名称/图标可在设置页修改(图标右键菜单、系统托盘或 `--config` 均可打开设置)
 - 可选**沉浸模式**:无边框透明圆角窗口 + 顶部悬浮控制栏
 - **Linux 原生体验**:桌面集成自动同步(应用名、图标、右键菜单)、可关闭系统托盘、Wayland/X11 均支持
-- 独立 WebKit 数据目录,Harness 登录/会话状态持久保存
+- 窗口透明度可调:支持"仅背景透明"(文字/内容不透明,露出桌面)与"整体半透明"两种观感
 
 ## 下载安装
 
@@ -77,14 +74,14 @@ src-tauri/
     ├── desktop.rs    # 桌面入口自动同步（名称/图标/右键菜单）
     ├── icons.rs      # favicon 探测 / 图片处理 / 缓存
     ├── tray.rs       # 可关闭的系统托盘
-    ├── window.rs     # 窗口构建与注入脚本
+    ├── window.rs     # 窗口构建与注入脚本（透明/沉浸）
     └── commands.rs   # 设置页 Tauri 命令
 ```
 
 ## 系统要求
 
 - Linux x86_64 + WebKitGTK 4.1
-- 沉浸模式需要支持透明窗口的合成器
+- 沉浸/透明模式需要支持透明窗口的合成器
 
 实现细节与踩坑见 [docs/maintenance.md](docs/maintenance.md)。
 

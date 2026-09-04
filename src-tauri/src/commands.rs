@@ -4,7 +4,6 @@ use tauri::AppHandle;
 
 use crate::config::{ConfigInput, IconMode, LauncherConfig};
 use crate::icons;
-use crate::window;
 
 /// 设置页初始化时获取当前状态
 #[derive(Debug, Default, Serialize)]
@@ -162,18 +161,17 @@ pub async fn save_config(app: AppHandle, input: ConfigInput, launch: bool) -> Sa
     crate::desktop::sync(&cfg);
     crate::tray::apply(&app, Some(&cfg));
 
-    // ---- 可选：重建主窗口 ----
+    // ---- 保存并（重新）启动：整体重启，让窗口模式/透明度/背景透明等生效 ----
     if launch {
-        if let Err(e) = window::create_main_window(&app, &cfg, true) {
+        if let Err(e) = crate::relaunch(&app) {
             return SaveResult {
                 saved: true,
                 launched: false,
                 warnings,
-                error: Some(e),
+                error: Some(format!("重启失败: {e}")),
                 icon_data_url,
             };
         }
-        window::close_settings_window(&app);
     }
 
     SaveResult {
@@ -183,4 +181,17 @@ pub async fn save_config(app: AppHandle, input: ConfigInput, launch: bool) -> Sa
         warnings,
         error: None,
     }
+}
+
+/// 实时调整主窗口整体透明度（拖动滑块即时预览）。
+/// 仅当主窗口画布已启用透明（沉浸/背景透明/半透明）时可见效果。
+#[tauri::command]
+pub fn live_set_opacity(app: tauri::AppHandle, opacity: u8) {
+    use tauri::Manager;
+    let Some(w) = app.get_webview_window(crate::window::MAIN_LABEL) else {
+        return;
+    };
+    let op = (opacity.clamp(10, 100) as f64) / 100.0;
+    let js = format!("(function(){{var b=document.body;if(b)b.style.opacity='{op}';}})()");
+    let _ = w.eval(js);
 }

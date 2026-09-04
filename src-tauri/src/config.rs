@@ -40,6 +40,8 @@ pub struct LauncherConfig {
     pub show_tray: bool,
     /// 窗口透明度（%）：100 不透明；<100 启用半透明窗口
     pub opacity: u8,
+    /// 仅背景透明：页面根背景透明（文字/内容不透明）
+    pub bg_transparent: bool,
 }
 
 impl Default for LauncherConfig {
@@ -48,14 +50,15 @@ impl Default for LauncherConfig {
             version: CONFIG_VERSION,
             // 开箱即用：默认连接本机 DeepSeek Harness Web 服务
             url: "http://127.0.0.1:3080/".into(),
-            title: "DeepSeek Harness".into(),
-            app_name: "DeepSeek Harness".into(),
+            title: "DeepSeek Harness Desktop - Linux".into(),
+            app_name: "DeepSeek Harness Desktop - Linux".into(),
             icon: IconMode::Default,
             width: 1280,
             height: 860,
             immersive: true,
             show_tray: true,
             opacity: 100,
+            bg_transparent: false,
         }
     }
 }
@@ -75,6 +78,7 @@ pub struct ConfigInput {
     pub immersive: bool,
     pub show_tray: bool,
     pub opacity: u8,
+    pub bg_transparent: bool,
 }
 
 impl ConfigInput {
@@ -105,6 +109,7 @@ impl ConfigInput {
             immersive: self.immersive,
             show_tray: self.show_tray,
             opacity: self.opacity,
+            bg_transparent: self.bg_transparent,
         }
     }
 }

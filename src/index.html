@@ -46,7 +46,7 @@
           <label for="appName">应用名称</label>
           <input id="appName" type="text" maxlength="80" spellcheck="false"
                  placeholder="留空则显示 DeepSeek Harness">
-          <p class="hint">程序列表（Show Applications）与 Dock 中显示的名字，保存后生效。</p>
+          <p class="hint">程序列表（Show Applications）与 Dock 中显示的名字。<b>提示：桌面会缓存名称/图标，若未刷新请按 Alt+F2 → r，或注销重登。</b></p>
         </div>
       </section>
 
@@ -95,6 +95,7 @@
             </div>
           </div>
         </div>
+        <p class="hint desktop-note" style="margin:12px 0 0">提示：Dock/程序列表的图标来自桌面缓存，更换图标后若未变化，按 <b>Alt+F2 → r</b> 或注销重新登录即可；窗口内图标即时生效。</p>
       </section>
 
       <!-- 窗口 -->
@@ -119,6 +120,14 @@
           </span>
         </label>
         <label class="toggle" style="margin-top:16px">
+          <input id="bgTransparent" type="checkbox">
+          <span class="toggle-ui" aria-hidden="true"></span>
+          <span class="toggle-text">
+            <strong>仅背景透明</strong>
+            <small>去掉页面所有底色/背景图，露出桌面（文字与真实图片内容保留）；需“保存并重新启动”生效，需要支持透明的合成器</small>
+          </span>
+        </label>
+        <label class="toggle" style="margin-top:16px">
           <input id="showTray" type="checkbox" checked>
           <span class="toggle-ui" aria-hidden="true"></span>
           <span class="toggle-text">
@@ -129,15 +138,16 @@
         <div class="field opacity-field" style="margin-top:18px">
           <label for="opacity">窗口透明度：<b id="opacityVal">100%</b></label>
           <input id="opacity" type="range" min="10" max="100" step="5" value="100">
-          <p class="hint">低于 100% 时为半透明窗口（“透明板”效果，需支持透明的合成器）；沉浸模式下效果最佳。</p>
+          <p class="hint">整体透明度（<b>文字也会变淡</b>）。拖动可实时预览（需窗口已开启透明）；最终效果以“保存并重新启动”为准。若只想去掉页面背景、保留文字清晰，请用上面的“仅背景透明”。</p>
         </div>
       </section>
 
       <p id="msg" class="msg" role="status" hidden></p>
 
       <footer class="actions">
+        <p class="hint" style="flex:1;margin:0;align-self:center">更改窗口模式/透明度/图标需重启应用才能完整生效——点右侧按钮会自动重启。快捷键 Ctrl+Enter 同“保存并重新启动”。</p>
         <button type="button" id="saveBtn" class="btn ghost">仅保存</button>
-        <button type="button" id="launchBtn" class="btn primary">保存并启动</button>
+        <button type="button" id="launchBtn" class="btn primary">保存并重新启动</button>
       </footer>
     </form>
   </main>
