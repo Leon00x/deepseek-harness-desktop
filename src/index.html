@@ -126,6 +126,11 @@
             <small>在顶部状态栏显示托盘图标，可右键打开设置/重新加载/退出</small>
           </span>
         </label>
+        <div class="field opacity-field" style="margin-top:18px">
+          <label for="opacity">窗口透明度：<b id="opacityVal">100%</b></label>
+          <input id="opacity" type="range" min="10" max="100" step="5" value="100">
+          <p class="hint">低于 100% 时为半透明窗口（“透明板”效果，需支持透明的合成器）；沉浸模式下效果最佳。</p>
+        </div>
       </section>
 
       <p id="msg" class="msg" role="status" hidden></p>

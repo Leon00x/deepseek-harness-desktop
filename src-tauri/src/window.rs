@@ -181,12 +181,28 @@ pub fn create_main_window(
         });
     }
 
+    let mut translucent = false;
     if cfg.immersive {
         builder = builder
             .decorations(false)
             .transparent(true)
             .initialization_script(POLYFILL)
             .initialization_script(IMMERSIVE_SCRIPT);
+        translucent = cfg.opacity < 100;
+    } else if cfg.opacity < 100 {
+        // 标准窗口 + 半透明：需要透明窗口画布
+        builder = builder.transparent(true);
+        translucent = true;
+    }
+
+    // 半透明：页面整体透明度 = opacity/100（让“透明板”效果可调）
+    if translucent {
+        let op = (cfg.opacity.clamp(10, 100) as f64) / 100.0;
+        let script = format!(
+            "(function(){{function f(){{var h=document.head;if(!h)return false;if(document.getElementById('__dsh_opacity__'))return true;var s=document.createElement('style');s.id='__dsh_opacity__';s.textContent='html{{background-color:transparent!important;}}body{{opacity:{op}!important;}}';h.appendChild(s);return true;}}if(!f())document.addEventListener('DOMContentLoaded',f,{{once:true}});}})();",
+            op = op
+        );
+        builder = builder.initialization_script(script);
     }
 
     builder.build().map_err(|e| format!("创建主窗口失败: {e}"))

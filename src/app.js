@@ -22,6 +22,8 @@
   const heightInput = $('height');
   const immersiveInput = $('immersive');
   const showTrayInput = $('showTray');
+  const opacityInput = $('opacity');
+  const opacityVal = $('opacityVal');
   const iconInputs = Array.from(document.querySelectorAll('input[name="iconMode"]'));
   const previewDefault = $('previewDefault');
   const previewImg = $('previewImg');
@@ -199,6 +201,7 @@
       height: h,
       immersive: immersiveInput.checked,
       showTray: showTrayInput.checked,
+      opacity: parseInt(opacityInput.value, 10) || 100,
     };
   }
 
@@ -253,6 +256,8 @@
         heightInput.value = c.height || 860;
         immersiveInput.checked = !!c.immersive;
         showTrayInput.checked = c.showTray !== false;
+        opacityInput.value = c.opacity || 100;
+        opacityVal.textContent = (c.opacity || 100) + '%';
         const mode = ['default', 'auto', 'upload'].includes(c.icon) ? c.icon : 'default';
         iconInputs.find((i) => i.value === mode).checked = true;
         state.storedIconDataUrl = st.iconDataUrl || null;
@@ -273,6 +278,9 @@
   }
 
   // ---- 事件 ----
+  opacityInput.addEventListener('input', () => {
+    opacityVal.textContent = opacityInput.value + '%';
+  });
   urlInput.addEventListener('input', () => {
     state.lastProbedUrl = '';
     if (currentMode() === 'auto') maybeProbe();

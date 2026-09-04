@@ -1,6 +1,6 @@
 {
   "name": "deepseek-harness",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DeepSeek Harness Linux 原生桌面客户端（Tauri 2 / WebKitGTK）",
   "private": true,
   "license": "MIT",

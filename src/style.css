@@ -233,3 +233,10 @@ input:focus {
   .icon-picker { flex-direction: column; }
   .preview-col { flex-direction: row; width: auto; }
 }
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.opacity-field b { color: var(--accent); }

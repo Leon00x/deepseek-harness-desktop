@@ -38,6 +38,8 @@ pub struct LauncherConfig {
     pub immersive: bool,
     /// 是否显示系统托盘图标（状态栏）
     pub show_tray: bool,
+    /// 窗口透明度（%）：100 不透明；<100 启用半透明窗口
+    pub opacity: u8,
 }
 
 impl Default for LauncherConfig {
@@ -53,6 +55,7 @@ impl Default for LauncherConfig {
             height: 860,
             immersive: true,
             show_tray: true,
+            opacity: 100,
         }
     }
 }
@@ -71,6 +74,7 @@ pub struct ConfigInput {
     pub height: u32,
     pub immersive: bool,
     pub show_tray: bool,
+    pub opacity: u8,
 }
 
 impl ConfigInput {
@@ -85,6 +89,7 @@ impl ConfigInput {
         self.title = self.title.trim().to_string();
         self.width = self.width.clamp(MIN_WIDTH, 7680);
         self.height = self.height.clamp(MIN_HEIGHT, 4320);
+        self.opacity = self.opacity.clamp(10, 100);
         Ok(())
     }
 
@@ -99,6 +104,7 @@ impl ConfigInput {
             height: self.height,
             immersive: self.immersive,
             show_tray: self.show_tray,
+            opacity: self.opacity,
         }
     }
 }
