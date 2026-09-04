@@ -16,7 +16,7 @@ serde_json = "1"
 url = "2"
 ureq = { version = "2", features = ["gzip"] }
 image = { version = "0.25", default-features = false, features = ["png", "ico", "jpeg"] }
-base64 = "0.22"
+base64 = "0.23"
 
 [profile.release]
 strip = true
